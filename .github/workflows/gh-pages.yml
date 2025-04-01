@@ -12,7 +12,7 @@ jobs:
     permissions:
       contents: write
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}
+      group: \${{ github.workflow }}-\${{ github.ref }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -30,26 +30,15 @@ jobs:
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
-        # If you're changing the branch from main,
-        # also change the `main` in `refs/heads/main`
-        # below accordingly.
         if: github.ref == 'refs/heads/main'
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: \${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public
 
-
-  inform:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: deploy
-    steps:
       - name: Workflow Webhook Action
         uses: distributhor/workflow-webhook@v3
         with:
           webhook_url: 'https://cool-pelican-27.convex.site/callbackPageDeployed'
           webhook_auth_type: "bearer"
-          webhook_auth: ${{ secrets.CALLBACK_BEARER }}
+          webhook_auth: \${{ secrets.CALLBACK_BEARER }}
           data: '{ "workflowRunning": false }'
